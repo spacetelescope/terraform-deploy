@@ -12,5 +12,8 @@ map_users = [{
     groups   = ["system:masters"]
 }]
 
+# Name of your vpc
+vpc_name = "<vpc-name>"
+
 # Name of your cluster
 cluster_name = "<cluster-name>"

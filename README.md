@@ -1,81 +1,122 @@
 # PANGEO Terraform Deploy
 
-Opinionated deployment of a PANGEO-style JupyterHub with [Terraform](https://www.terraform.io/)
+Opinionated deployment of PANGEO-style JupyterHub-ready infrastructure with [Terraform](https://www.terraform.io/). 
 
-## What?
+This particular branch is presented for use with the Medium blog post JupyterHub-Ready Infrastructure Deployment with Terraform on AWS (link?).
 
-A cloud based JupyterHub close to your data is a great way to run interactive
-computations, especially paired with [Dask](http://dask.org/) for parallel compute.
-However, setting these up on your cloud provider of choice in an automated fashion
-with reasonable defaults can be a chore. This project aims to automate as much of that
-as possible.
+## Introduction
 
-This project's goal is to help you set up and maintain this kind of environment
-in a completely automated fashion - including setting up all the cloud infrastructure
-necessary. We do this by leveraging open source projects like
-[terraform](https://www.terraform.io/), [helm](https://helm.sh/) and
-[zero-to-jupyterhub](https://z2jh.jupyter.org).
+This repo is here to be an opintionated configuration and guide for deploying all the infrastructure necessary for a Pangeo-style JupyterHub. 
 
-Currently, there is only code for AWS here. However, we hope other cloud providers
-will be represented here soon enough.
-
-## How?
+## Deployment Instructions
 
 ### AWS Setup
 
-#### 1. Install Tools
+#### Install Terraform, dependencies, and this GitHub repo
 
 You'll need the following tools installed:
 
-1. [Terraform](https://www.terraform.io/downloads.html).
-   If you are on MacOS, you can install it with `brew install terraform`
-2. [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
-   If you are on MacOS, you can install it with `brew install kubectl`
-3. [AWS CLI](https://aws.amazon.com/cli/)
+- [Terraform](https://www.terraform.io/downloads.html)
+- [AWS CLI](https://aws.amazon.com/cli/)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [Helm](https://helm.sh/docs/intro/install/)
 
-#### 2. Authenticate to AWS
+You will also need this branch of this repo. You can get it with:
 
-You need to have the `aws` CLI configured to run correctly from your
-local machine - terraform will just read from the same source. The
-[documentation on configuring AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
-should help.
+```
+git clone https://github.com/salvis2/terraform-deploy.git
+cd terraform-deploy
+git checkout -t origin/blog-post
+```
 
-#### 3. Fill in your variable names
+#### Authenticate to AWS
 
-The terraform deployment needs several variable names set before it
-can start. You can copy the file `aws/your-cluster.tfvars.template` into a file
-named `aws/<your-cluster>.tfvars`, and modify the placeholders there
-as appropriate.
+You need to have the `aws` CLI configured to run correctly from your local machine - terraform will just read from the same source. The [documentation on configuring AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) should help.
 
-#### 4. Run terraform!
+This repo provides the `aws-creds` folder in case you do not have admin permissions or want to follow the principle of least privilege. By default (as in, what is uncommneted), the folder gives you a new user named `terraform-bot` with policy attachments to run the Terraform commands in the `aws` folder. If you want to create this user, run the following:
+
+```
+cd aws-creds
+terraform init
+terraform apply
+```
+
+Terraform will prompt you for a region here. IAM resources are global, so you can put in whatever region you want to create the rest of the resources in.
+
+You will then have to configure `terraform-bot`'s credentials in the AWS Console. Go and generate access keys for the user, then put them into your command line with 
+
+```
+aws configure --profile terraform-bot
+```
+
+#### Configure your Infrastructure
+
+The terraform deployment needs several variable names set before it can start. Run
+
+```
+cp your-cluster.tfvars.template <your-cluster>.tfvars
+```
+
+with your desired filename. You should supply a value for each variable listed in this file. If you don't know your AWS account ID offhand, you can find it with the command
+
+```
+aws sts get-caller-identity
+```
+
+#### Run terraform!
 
 Once this is all done, you should:
 
-a. `cd aws`
-b. Run `terraform init` to set up appropriate plugins
-c. Run `terraform apply -var-file=<your-cluster>.tfvars`, referring to
-   The `tfvars` file you made in step 3
-d. Type `yes` when prompted
-e. ![Wait for a while](https://imgs.xkcd.com/comics/compiling.png).
-   This could take a while!
+- `cd aws`
+- Run `terraform init` to set up appropriate plugins
+- Run `terraform apply -var-file=<your-cluster>.tfvars`, referring to the `tfvars` file you made in step 3
+- Type `yes` when prompted
+- Wait patiently. The infrastructure can take 15 minutes or more to create. Sometimes you will get an error saying the Kubernetes cluster is unreachable. This is usually resolved by running the `terraform apply ...` command again. Tons of green output means the deployment was successful!
 
-#### 5. Test out your hub!
+#### Test out your cluster!
 
-Once Step 4 finishes, you should find the public endpoint of the hub
-that was just set up.
+If you want to take a peek at your cluster, you will need to tell `kubectl` and `Helm` where your cluster is, since Terraform doesn't modify them by default. Do this with the following command, filling in values for your deployment.
 
-a. Based on the variables you set in your `tfvars` file, run this command
+```
+aws eks update-kubeconfig --name=<cluster-name> --region=<region> --profile=<profile>
+```
 
-   ```
-   aws eks update-kubeconfig --region=<your-region> --name=<your-cluster>
-   ```
+Now you should be able to run local commands to inspect the cluster! Try the following:
 
-   This should connect `kubectl` to the kubernetes cluster we just built.
-b. You can find the JupyterHub's public URL with
+```
+aws eks list-clusters
+aws eks describe-cluster --name=<cluster-name>
+kubectl get pods -A
+kubectl get nodes -A
+helm list -A
+```
 
-   ```
-   kubectl -n staging get svc proxy-public
-   ```
+#### Tear Down
 
-c. Copy the long URL under 'EXTERNAL-IP' into your browser. Login with
-   any username and password, and check out your new hub!
+If you don't want these resources on your account forever (since they cost you money), you can tear it all down with the following:
+
+```
+terraform destroy --var-file=<your-cluster>.tfvars
+cd ../aws-creds/
+terraform destroy
+```
+
+If you set your local kubeconfig to point to this cluster, you can remove that with the following:
+
+```
+kubectl config delete-cluster <your-cluster-arn>
+kubectl config delete-context <your-cluster-context>
+kubectl config unset users.<user-name>
+```
+
+You can get those variables with the corresponding commands:
+- <your-cluster-arn>: `kubectl config get-clusters`
+- <your-cluster-context>: `kubectl config get-contexts`
+- <user-name>: `kubectl config view`, the name you want will look something like `arn:aws:eks:us-west-2:############:cluster/<your-cluster>`.
+
+You may also want to set your `kubectl` context to be something else with
+
+```
+kubectl config use-context <different context>
+```
+

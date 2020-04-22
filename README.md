@@ -33,7 +33,7 @@ git checkout -t origin/blog-post
 
 You need to have the `aws` CLI configured to run correctly from your local machine - terraform will just read from the same source. The [documentation on configuring AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) should help.
 
-This repo provides the `aws-creds` folder in case you do not have admin permissions or want to follow the principle of least privilege. By default (as in, what is uncommneted), the folder gives you a new user named `terraform-bot` with policy attachments to run the Terraform commands in the `aws` folder. If you want to create this user, run the following:
+This repo provides the `aws-creds` folder in case you do not have admin permissions or want to follow the principle of least privilege. By default (as in, what is uncommented), the folder gives you a new user named `terraform-bot` with policy attachments to run the Terraform commands in the `aws` folder. If you want to create this user, run the following:
 
 ```
 cd aws-creds

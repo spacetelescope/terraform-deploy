@@ -26,6 +26,11 @@ resource "aws_iam_user_policy_attachment" "attach-terraform-permissions" {
   policy_arn  = aws_iam_policy.terraform_iam_policy.arn
 }
 
+resource "aws_iam_user_policy_attachment" "attach-efs-policies" {
+  user        = aws_iam_user.user.name
+  policy_arn  = "arn:aws:iam::aws:policy/AmazonElasticFileSystemFullAccess"
+}
+
 
 # Create a role with the policy json
 # Allow a user to assume this role

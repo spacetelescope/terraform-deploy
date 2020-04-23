@@ -41,7 +41,7 @@ terraform init
 terraform apply
 ```
 
-Terraform will prompt you for a region here. IAM resources are global, so you can put in whatever region you want to create the rest of the resources in.
+Terraform will prompt you for an `awscli` profile and a region here. The profile you want to use if probably `default`. IAM resources are global, so you can put in whatever region you want to create the rest of the resources in.
 
 You will then have to configure `terraform-bot`'s credentials in the AWS Console. Go and generate access keys for the user, then put them into your command line with 
 

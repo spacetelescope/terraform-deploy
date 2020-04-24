@@ -78,8 +78,8 @@ aws eks update-kubeconfig --name=<cluster-name> --region=<region> --profile=<pro
 Now you should be able to run local commands to inspect the cluster! Try the following:
 
 ```
-aws eks list-clusters
-aws eks describe-cluster --name=<cluster-name>
+aws eks list-clusters --profile=terraform-bot
+aws eks describe-cluster --name=<cluster-name> --profile=terraform-bot
 kubectl get pods -A
 kubectl get nodes -A
 helm list -A

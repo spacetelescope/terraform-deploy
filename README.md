@@ -33,15 +33,15 @@ git checkout -t origin/blog-post
 
 You need to have the `aws` CLI configured to run correctly from your local machine - terraform will just read from the same source. The [documentation on configuring AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) should help.
 
-This repo provides the `aws-creds` folder in case you do not have admin permissions or want to follow the principle of least privilege. By default (as in, what is uncommented), the folder gives you a new user named `terraform-bot` with policy attachments to run the Terraform commands in the `aws` folder. If you want to create this user, run the following:
+This repo provides the `aws-creds` folder in case you do not have admin permissions or want to follow the principle of least privilege. By default (as in, what is uncommented), the folder gives you a new user named `terraform-bot` with policy attachments to run the Terraform commands in the `aws` folder. 
+
+If you want to create this user, go into `aws-creds/iam.tfvars` and make sure the value of `profile` is the correct awscli profile you want to use. Then, run the following:
 
 ```
 cd aws-creds
 terraform init
 terraform apply
 ```
-
-Terraform will prompt you for an `awscli` profile and a region here. The profile you want to use if probably `default`. IAM resources are global, so you can put in whatever region you want to create the rest of the resources in.
 
 You will then have to configure `terraform-bot`'s credentials in the AWS Console. Go and generate access keys for the user, then put them into your command line with 
 
@@ -51,17 +51,11 @@ aws configure --profile terraform-bot
 
 #### Configure your Infrastructure
 
-The terraform deployment needs several variable names set before it can start. Run
+The terraform deployment needs several variable names set before it can start. If you look in `aws/your-cluster.tfvars`, there are four variables present. You should input cluster and vpc names. You only have to change the region if you want to create resources in a different region. Similarly, the profile only needs to be changed if you are not using the `terraform-bot` user from the last step.
 
-```
-cp your-cluster.tfvars.template <your-cluster>.tfvars
-```
+You can change the name of this file if you want. Just keep in mind that the instructions will list it as `<your-cluster>.tfvars` and you will have to type in the new filename that you set. A professional deployment should have a more descriptive name, but it isn't necessary here.
 
-with your desired filename. You should supply a value for each variable listed in this file. If you don't know your AWS account ID offhand, you can find it with the command
-
-```
-aws sts get-caller-identity
-```
+There are additional variables you can specify in here if you wish. The options are present in `variables.tf` in the same folder.
 
 #### Run terraform!
 
@@ -69,7 +63,7 @@ Once this is all done, you should:
 
 - `cd aws`
 - Run `terraform init` to set up appropriate plugins
-- Run `terraform apply -var-file=<your-cluster>.tfvars`, referring to the `tfvars` file you made in step 3
+- Run `terraform apply -var-file=<your-cluster>.tfvars`
 - Type `yes` when prompted
 - Wait patiently. The infrastructure can take 15 minutes or more to create. Sometimes you will get an error saying the Kubernetes cluster is unreachable. This is usually resolved by running the `terraform apply ...` command again. Tons of green output means the deployment was successful!
 

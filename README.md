@@ -79,17 +79,17 @@ NOTE: Creating these resources will cost your AWS account money. This cluster co
 
 #### First-Time Deployment
 
-If you have configured the `awscli` profile you want to use and input the values you like into your `.tfvars` file, then you are ready to deploy the infrastructure! Running the command below will first generate a plan as Terraform validates the configuration. The plan is a list of the lowest-level resources it can give you. We use the modules so we don't hvae to look at all the low-level resources all the time (that's a lot to look at), but it is good to look at them at least once to make sure you understand everything you are creating.
+If you have configured the `awscli` profile you want to use and input the values you like into your `.tfvars` file, then you are ready to deploy the infrastructure! Running the command below will first generate a plan as Terraform validates the configuration. The plan is a list of the lowest-level resources it can give you. We use the modules so we don't have to look at all the low-level resources all the time (that's a lot to look at), but it is good to look at them at least once to make sure you understand everything you are creating.
 
 You can take a look at the 63 resources if you like, but at the end of the day, all you need to do to start deploying infrastructure is type `yes` when Terraform prompts you.
 
 ```
-terraform apply -var-file=<your-cluster>.tfvars`
+terraform apply -var-file=<your-cluster>.tfvars
 ```
 
 The infrastructure can take 15 minutes or more to create (the EKS cluster takes 9-12 minutes alone).
 
-While watching Terraform deploy everything, you may notice that sometimes, many resources are created at the same time, but other times, only one resource is being created. Terraform takes into account resource dependencies and will make sure independent resources are created before dependent ones. It will try to deploy as many things at once as possible but will have to wait for certain resources to finish before it can move on.
+While watching Terraform deploy everything, you may notice that sometimes many resources are created at the same time, but other times only one resource is being created. Terraform takes into account resource dependencies and will make sure independent resources are created before dependent ones. It will try to deploy as many things at once as possible but will have to wait for certain resources to finish before it can move on.
 
 NOTE: Sometimes you will get an error saying the Kubernetes cluster is unreachable. This is usually resolved by running the `terraform apply ...` command again.
 
@@ -157,9 +157,9 @@ kubectl config unset users.<user-name>
 ```
 
 You can get those variables with the corresponding commands:
-- <your-cluster-arn>: `kubectl config get-clusters`
-- <your-cluster-context>: `kubectl config get-contexts`
-- <user-name>: `kubectl config view`, the name you want will look something like `arn:aws:eks:us-west-2:############:cluster/<your-cluster>`.
+- `your-cluster-arn`: `kubectl config get-clusters`
+- `your-cluster-context`: `kubectl config get-contexts`
+- `user-name`: `kubectl config view`, the name you want will look something like `arn:aws:eks:us-west-2:############:cluster/<your-cluster>`.
 
 You may also want to set your `kubectl` context to be something else with
 

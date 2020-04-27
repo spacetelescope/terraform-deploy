@@ -1,12 +1,10 @@
 # PANGEO Terraform Deploy
 
-Opinionated deployment of PANGEO-style JupyterHub-ready infrastructure with [Terraform](https://www.terraform.io/). 
-
-This particular branch is presented for use with the Medium blog post JupyterHub-Ready Infrastructure Deployment with Terraform on AWS (link?).
-
 ## Introduction
 
-This repo is here to be an opintionated configuration and guide for deploying all the infrastructure necessary for a Pangeo-style JupyterHub. 
+This repo houses an opinionated deployment of PANGEO-style JupyterHub-ready infrastructure with [Terraform](https://www.terraform.io/). 
+
+This particular branch is presented for use with the Medium blog post JupyterHub-Ready Infrastructure Deployment with Terraform on AWS.
 
 ## Deployment Instructions
 
@@ -14,14 +12,14 @@ This repo is here to be an opintionated configuration and guide for deploying al
 
 #### Install Terraform, dependencies, and this GitHub repo
 
-You'll need the following tools installed:
+In order to deploy the configuration in this repo, you'll need the following tools installed:
 
 - [Terraform](https://www.terraform.io/downloads.html)
 - [AWS CLI](https://aws.amazon.com/cli/)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [Helm](https://helm.sh/docs/intro/install/)
 
-You will also need this branch of this repo. You can get it with:
+You will also need the current branch of this repo. You can get it with:
 
 ```
 git clone https://github.com/salvis2/terraform-deploy.git

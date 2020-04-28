@@ -46,7 +46,7 @@ If you want to create this user, go into `aws-creds/iam.tfvars` and make sure th
 ```
 cd aws-creds
 terraform init
-terraform apply
+terraform apply -var-file=iam.tfvars
 ```
 
 Terraform will show the plan to create the IAM policy, an IAM user, and the attachment of two policies onto the user. Confirm the apply command and Terraform will let you know when it's finished.
@@ -146,11 +146,16 @@ Running `terraform destroy ...` will generate a plan similar to `terraform apply
 
 ```
 terraform destroy --var-file=<your-cluster>.tfvars
-cd ../aws-creds/
-terraform destroy
 ```
 
 The `destroy` command can time out trying to destroy some of the Kubernetes resources, but re-running it usually solves the issue. If you put anything on your cluster (besides the `efs-provisioner` and the `cluster-autoscaler`), you should remove it before running `terraform destroy ...`. Since Terraform isn't detecting what software is on your cluster (it only knows what it put on the cluster), it doesn't know how to remove it, and that can lead to issues.
+
+Removing the `terraform-bot` user will require to manually delete the access keys in the AWS Console. Then, you can delete the Terraform entries.
+
+```
+cd ../aws-creds/
+terraform destroy -var-file=iam.tfvars
+```
 
 If you set your local kubeconfig to point to this cluster, you can remove that with the following:
 

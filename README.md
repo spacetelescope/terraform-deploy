@@ -12,9 +12,7 @@ This particular branch is presented for use with the Medium blog post JupyterHub
 
 ## Deployment Instructions
 
-### AWS Setup
-
-#### Install Terraform, dependencies, and this GitHub repo
+### Install Terraform, dependencies, and this GitHub repo
 
 In order to deploy the configuration in this repo, you'll need the following tools installed:
 
@@ -33,7 +31,9 @@ git checkout -t origin/blog-post
 
 You will notice there are two folders here, `aws` and `aws-creds`. Terraform will interact with each directory separately. We can now set up some credentials before we deploy the infrastructure.
 
-#### Authenticate to AWS
+### Configuration
+
+#### Configure the AWS CLI
 
 You need to have the `aws` CLI configured to run correctly from your local machine - terraform will just read from the same source. The [documentation on configuring AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) should help.
 

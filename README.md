@@ -4,7 +4,11 @@
 
 This repo houses an opinionated deployment of PANGEO-style JupyterHub-ready infrastructure with [Terraform](https://www.terraform.io/). 
 
-This particular branch is presented for use with the Medium blog post JupyterHub-Ready Infrastructure Deployment with Terraform on AWS.
+This particular branch is presented for use with the Medium blog post JupyterHub-Ready Infrastructure Deployment with Terraform on AWS. The guide to deploy this JupyterHub-ready infrastructure can be summarized as:
+- Download Terraform, its dependencies, and the repo
+- Configure a few settings for the infrastructure and for the AWS CLI
+- Deploy the infrastructure using Terraform commands
+
 
 ## Deployment Instructions
 

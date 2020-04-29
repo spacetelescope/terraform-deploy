@@ -110,7 +110,7 @@ aws eks update-kubeconfig --name=<cluster-name> --region=<region> --profile=<pro
 Now you should be able to run local commands to inspect the cluster! Try the following:
 
 ```
-aws eks list-clusters --profile=terraform-bot
+aws eks list-clusters --profile=<profile>
 aws eks describe-cluster --name=<cluster-name> --profile=terraform-bot
 kubectl get pods -A
 kubectl get nodes -A
@@ -170,7 +170,7 @@ You can get those variables with the corresponding commands:
 - `your-cluster-context`: `kubectl config get-contexts`
 - `user-name`: `kubectl config view`, the name you want will look something like `arn:aws:eks:us-west-2:############:cluster/<your-cluster>`.
 
-You may also want to set your `kubectl` context to be something else with
+If you had a previous `kubectl` context set, you may also want to set it to be something else with
 
 ```
 kubectl config use-context <different context>

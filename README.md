@@ -24,7 +24,7 @@ In order to deploy the configuration in this repo, you'll need the following too
 You will also need the current branch of this repo. You can get it with:
 
 ```
-git clone https://github.com/salvis2/terraform-deploy.git
+git clone https://github.com/pangeo-data/terraform-deploy.git
 cd terraform-deploy
 git checkout -t origin/blog-post
 ```

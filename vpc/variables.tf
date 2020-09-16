@@ -109,7 +109,7 @@ variable worker_security_group_id {
 variable worker_additional_security_group_ids {
    description = "Security group accepting 443 ingress from worker_security_group_id"
    type = list(string)
-   default = []
+   default = null
 }
 
 # ========================================================================

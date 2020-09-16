@@ -1,22 +1,10 @@
 # Put your cluster where your data is
 region = "us-east-1"
 
-map_users = []
-
-# See https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html for
-# more information
-map_roles = [{
-    rolearn  = "arn:aws:sts::328656936502:assumed-role/jupyterhub-deploy/i-02b0add7d3b133877"
-    username = "jmiller"
-    groups   = ["system:masters"]
-},{
-    rolearn  = "arn:aws:sts::328656936502:role/jupyterhub-deploy/i-02b0add7d3b133877"
-    username = "jmiller"
-    groups   = ["system:masters"]
-}]
-
 # Name of your cluster
 cluster_name = "jmiller-hub"
+
+allowed_roles = ["arn:aws:iam::328656936502:role/jupyterhub-deploy"]
 
 # # ============================================================================================================
 

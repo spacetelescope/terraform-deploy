@@ -32,46 +32,20 @@ provider "kubernetes" {
 data "aws_availability_zones" "available" {
 }
 
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 2.6"
-
-  name                 = "${var.cluster_name}-vpc"
-  cidr                 = var.cidr
-  azs                  = data.aws_availability_zones.available.names
-  # We can use private subnets too once https://github.com/aws/containers-roadmap/issues/607
-  # is fixed
-  public_subnets       = var.public_subnets
-  private_subnets      = var.private_subnets
-  
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-  enable_nat_gateway   = var.use_private_subnets
-  single_nat_gateway   = var.use_private_subnets
-  
-  tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-  }
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                    = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"           = "1"
-  }
-}
-
 module "eks" {
   source       = "terraform-aws-modules/eks/aws"
   cluster_name = var.cluster_name
-  subnets      = var.use_private_subnets ? module.vpc.private_subnets : module.vpc.public_subnets
+  subnets      = local.eks_subnet_ids
   cluster_endpoint_private_access = true
-  vpc_id       = module.vpc.vpc_id
+  cluster_endpoint_private_access_cidrs = local.private_subnet_cidrs
+  vpc_id       = local.vpc_id
   enable_irsa  = true
-
+  
+  cluster_create_security_group = var.cluster_create_security_group
+  cluster_security_group_id = var.cluster_security_group_id
+  worker_create_security_group = var.worker_create_security_group
+  worker_security_group_id = var.worker_security_group_id
+  worker_additional_security_group_ids = var.worker_additional_security_group_ids
 
   node_groups_defaults = {
     ami_type  = "AL2_x86_64"
@@ -105,8 +79,8 @@ module "eks" {
     }
   }
 
-
   map_accounts = var.map_accounts
+  map_users = var.map_users
 
   map_roles = concat([{
     rolearn  = aws_iam_role.hubploy_eks.arn
@@ -114,6 +88,7 @@ module "eks" {
     # FIXME: Narrow these permissions down?
     groups   = ["system:masters"]
   }], var.map_roles)
+
 }
 
 

@@ -37,7 +37,7 @@ module "eks" {
   cluster_name = var.cluster_name
   subnets      = local.eks_subnet_ids
   cluster_endpoint_private_access = true
-  cluster_endpoint_private_access_cidrs = local.private_subnet_cidrs
+  # cluster_endpoint_private_access_cidrs = local.private_subnet_cidrs
   vpc_id       = local.vpc_id
   enable_irsa  = true
   

@@ -18,8 +18,7 @@ vpc_cidr = "<VPC-CIDR>"   #  "10.144.0.0/12"   # managed or unmanaged for EKS an
 
 unmanaged_vpc_id = "<VPC-ID>"   #    "vpc-0609d0f2a72ccf96d"       # sandbox
 unmanaged_public_subnet_names = ["<PUBLIC-SUBNET-NAMES-OR-PATTERNS>"]  # ["DEV-WF-SC-SB-Public-*"]
-unmanaged_private_subnet_names = ["<PRIVATE-SUBNET-NAMES-OR-PATTERNS>"]  # ["DEV-WF-SC-SB-Private-*"]  # NOTE: probably switch to DMZ subnets
-
+unmanaged_private_subnet_names = ["<PRIVATE-SUBNET-NAMES-OR-PATTERNS>"]  # ["DEV-WF-SC-SB-DMZ-*"]
 cluster_endpoint_public_access_extra_cidrs = []  # Public EKS API endpoint only reachable by NATs and these.
 
 # ============================================================================================================

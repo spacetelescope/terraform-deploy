@@ -9,7 +9,7 @@ cluster_version = "1.17"
 
 allowed_roles = ["<DEPLOY-ROLE>"]   
 
-permissions_boundary = "arn:aws:iam::<account-id>:policy/<perm-boundary-policy>"
+permissions_boundary = "<perm-boundary-policy-arn>"
 
 rolearn = "arn:aws:iam::<account-id>:role/jupyterhub-admin"
 
